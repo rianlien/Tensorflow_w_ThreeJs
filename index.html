@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>TensorFlow.js with Three.js</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- importing three.js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/105/three.min.js"></script>
+    <!-- Import TensorFlow.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js" type="text/javascript"></script>
+    <!-- *** Import tfjs-vis - optional *** -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis/dist/tfjs-vis.umd.min.js"></script>
+    <!-- Load the coco-ssd model to use to recognize things in images -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <!-- Import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+    
+    <script type="text/javascript">
+      // FPS表示用
+      var fps = 0;
+      var frame = 0;
+      var startTime, endTime;
+      // ゲームループ
+      function gameLoop(){
+        frame ++;
+        // 描画をクリア
+        // FPS表示
+        f_s="<p>"+fps+"</p>"
+        document.getElementById('fps').innerHTML = f_s;
+        // 計測
+        endTime = new Date().getTime();
+        if(endTime - startTime >= 1000){
+          fps = frame;
+          frame = 0;
+          startTime = new Date().getTime();
+        }
+        // requestAnimationFrame呼び出し
+        requestAnimationFrame(gameLoop);
+      }
+
+      // 起動時の処理
+      window.onload = function(){
+        // 計測スタート
+        startTime = new Date().getTime();
+        gameLoop();
+      }
+	</script>
+  </head>  
+  <body>
+    <h1>Multiple object detection using pre trained model in TensorFlow.js</h1>
+
+    <p>Wait for the model to load before clicking the button to enable the webcam - at which point it will become visible to use.</p>
+    
+    <section id="demos" class="invisible">
+
+      <p>Hold some objects up close to your webcam to get a real-time classification! When ready click "enable webcam" below and accept access to the webcam when the browser asks (check the top left of your window)</p>
+      <h1>requestAnimationFrameのFPS表示</h1>
+      <h1 id = "fps"> </h1>
+	    
+      <div id="liveView" class="camView" >
+        <button id="webcamButton">Enable Webcam</button>
+        <video id="webcam" autoplay  playsinline></video>
+        <canvas id="canvas" class= "canvas"></canvas>
+        <script> 
+          const scene = new THREE.Scene();
+          const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+          const renderer = new THREE.WebGLRenderer( { alpha: true } );
+          renderer.setClearColor( 0x000000, 0 );
+          renderer.setSize( window.innerWidth, window.innerHeight );
+          document.body.appendChild( renderer.domElement );
+          
+          const geometry = new THREE.BoxGeometry(1,1,1,2,1,1);
+          const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+          const cube = new THREE.Mesh( geometry, material );
+          scene.add( cube );
+
+          camera.position.z = 5;
+          const animate = function () {
+				    requestAnimationFrame( animate );
+
+				    cube.rotation.x += 0.01;
+				    cube.rotation.y += 0.01;
+
+				    renderer.render( scene, camera );
+			    };
+
+			    animate();
+        </script>
+        
+      </div>
+    </section>
+    
+    <!-- Import the page's JavaScript to do some stuff -->
+    <script src="/script.js" defer></script>
+  
+    
+  </body>
+</html>
