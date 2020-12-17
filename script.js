@@ -89,6 +89,9 @@ function predictWebcam() {
         ctx.font = "30px 'ＭＳ ゴシック'";
         ctx.textAlign = "left";
         ctx.textBaseline = "top";
+        if(pred.class == "cup"){
+          ctx.fillStyle = "red";
+        }
 
         //塗りつぶしのテキストを、座標(20, 75)の位置に最大幅200で描画する
         ctx.fillText(""+pred.class, pred.bbox[0],pred.bbox[1], 200);
