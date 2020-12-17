@@ -76,3 +76,21 @@ section {
   left: 0;
   pointer-events: none;
 }
+
+#canvas_threejs{
+  position: relative;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+
+#webcam{
+  position: absolute;
+  top:0;
+  left:0;
+}
+
+#app{
+  position: relative;
+}
