@@ -22,88 +22,10 @@ const liveView = document.getElementById('liveView');
 const demosSection = document.getElementById('demos');
 const enableWebcamButton = document.getElementById('webcamButton');
 
-var webCam = new WebCam();
-let model = new Model();
-console.log(webCam)
-webCam.getUserMediaSupported();
+const THREEJS = new ThreeJs();
+const CALCULATOR = new FpsCalculator();
+const WEBCAM = new WebCam();
 
-// function getUserMediaSupported() {
-//   return !!(navigator.mediaDevices &&
-//     navigator.mediaDevices.getUserMedia);
-// }
-
-// If webcam supported, add event listener to button for when user
-// wants to activate it to call enableCam function which we will 
-// define in the next step.
-if (webCam.getUserMediaSupported()) {
-  enableWebcamButton.addEventListener('click', enableCam);
-} else {
-  console.warn('getUserMedia() is not supported by your browser');
-}
-// Placeholder function for next step. Paste over this in the next step.
-function enableCam(event) {
-// Only continue if the COCO-SSD has finished loading.
-  if (!model) {
-    return;
-  }
-  
-  // Hide the button once clicked.
-  event.target.classList.add('removed');  
-  
-  // getUsermedia parameters to force video but not audio.
-  const constraints = {
-    video: true
-  };
-
-  // Activate the webcam stream.
-  navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-    video.srcObject = stream;
-    video.addEventListener('loadeddata', predictWebcam);
-  });
-
-}
-
-
-function predictWebcam() {
-  //re-sizing canvas and canvas_threeJs
-  let w = video.clientWidth; 
-  let h = video.clientHeight; 
-  $('#canvas').attr('width', w)
-  $('#canvas').attr('height', h)
-  $('#canvas_threejs').attr('width', w)
-  $('#canvas_threejs').attr('height', h)
-  // Now let's start classifying a frame in the stream.
-  model.detect(video).then(function (predictions) {
-    
-    // Now lets loop through predictions and draw them to the live view if they have a high confidence score.
-    for (let n = 0; n < predictions.length; n++) {
-      // If we are over 66% sure we are sure we classified it right, draw it!
-      let pred = predictions[n]
-      if (pred.score > 0.66) {
-        
-        CTX.beginPath();
-        //detectした場所に四角形を作成する rect(x,y,w,h)
-        CTX.rect(pred.bbox[0],pred.bbox[1],pred.bbox[2],pred.bbox[3]);
-        //現在のパスを輪郭表示する
-        CTX.stroke();
-        CTX.fillStyle = "blue";
-        CTX.font = "30px 'ＭＳ ゴシック'";
-        CTX.textAlign = "left";
-        CTX.textBaseline = "top";
-        if(pred.class == "cup"){
-          CTX.fillStyle = "red";
-        }
-
-        //塗りつぶしのテキストを、座標(20, 75)の位置に最大幅200で描画する
-        CTX.fillText(""+pred.class, pred.bbox[0],pred.bbox[1], 200);
-      }
-    }
-    
-    // Call this function again to keep predicting when the browser is ready.
-    window.requestAnimationFrame(predictWebcam);
-  });
-
-}
 
 // // Pretend model has loaded so we can try out the webcam code.
 // let model = true;
@@ -119,4 +41,9 @@ function predictWebcam() {
 //   demosSection.classList.remove('invisible');
 // });
 
-let threeJs= new ThreeJs();
+
+THREEJS.createCube();
+THREEJS.displeyThreeJs();
+CALCULATOR.start();
+WEBCAM.startWebCam();
+

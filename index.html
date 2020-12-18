@@ -17,37 +17,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
     <!-- Import the webpage's stylesheet -->
     <link rel="stylesheet" href="style.css">
-    
-    <script type="text/javascript">
-      // FPS表示用
-      var fps = 0;
-      var frame = 0;
-      var startTime, endTime;
-      // ゲームループ
-      function gameLoop(){
-        frame ++;
-        // 描画をクリア
-        // FPS表示
-        f_s="<p>"+fps+"</p>"
-        document.getElementById('fps').innerHTML = f_s;
-        // 計測
-        endTime = new Date().getTime();
-        if(endTime - startTime >= 1000){
-          fps = frame;
-          frame = 0;
-          startTime = new Date().getTime();
-        }
-        // requestAnimationFrame呼び出し
-        requestAnimationFrame(gameLoop);
-      }
-
-      // 起動時の処理
-      window.onload = function(){
-        // 計測スタート
-        startTime = new Date().getTime();
-        gameLoop();
-      }
-	</script>
   </head>  
   <body>
     <h1>Multiple object detection using pre trained model in TensorFlow.js</h1>
@@ -78,6 +47,8 @@
     <!-- Import the page's JavaScript to do some stuff -->
     <script src="script.js" defer></script>
     <script src ="main.js"></script>
+
+
     
   </body>
 </html>
