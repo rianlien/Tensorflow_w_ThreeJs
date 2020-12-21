@@ -96,7 +96,7 @@ class WebCam{
         // Note: cocoSsd is an external object loaded from our index.html
         // script tag import so ignore any warning in Glitch.
         cocoSsd.load().then(function (loadedModel) {
-            this.model = loadedModel;
+            model = loadedModel;
             // Show demo section now model is ready to use.
             this.demosSection.classList.remove('invisible');
         });
@@ -109,7 +109,8 @@ class WebCam{
         // wants to activate it to call enableCam function which we will 
         // define in the next step.
         if (this.getUserMediaSupported()) {
-            this.enableWebcamButton.addEventListener('click', this.enableCam());
+            this.enableWebcamButton.addEventListener('click', this.enableCam(//ここは何が入る？
+                ));
           } else {
             console.warn('getUserMedia() is not supported by your browser');
           }
@@ -135,10 +136,13 @@ class WebCam{
         });
     }
     resizeCanvas(){
-        this.w = video.clientWidth; 
-        this.h = video.clientHeight; 
+        this.w = this.video.clientWidth; 
+        this.h = this.video.clientHeight; 
         $('#canvas').attr('width', this.w)
         $('#canvas').attr('height', this.h)
+        //for now
+        $('#canvas_threejs').attr('width', this.w)
+        $('#canvas_threejs').attr('height', this.h)
     }
     displayDetection(pred){
         this.ctx.beginPath();
@@ -159,7 +163,7 @@ class WebCam{
     }
     predictWebcam(){
         this.resizeCanvas();
-        model.detect(video).then(function (predictions) {
+        this.model.detect(video).then(function (predictions) {
             // Now lets loop through predictions and draw them to the live view if they have a high confidence score.
             for (let n = 0; n < predictions.length; n++) {
               // If we are over 66% sure we are sure we classified it right, draw it!
