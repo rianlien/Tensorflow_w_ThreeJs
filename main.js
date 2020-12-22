@@ -95,8 +95,8 @@ class WebCam{
         // to get everything needed to run.
         // Note: cocoSsd is an external object loaded from our index.html
         // script tag import so ignore any warning in Glitch.
-        cocoSsd.load().then(function (loadedModel) {
-            model = loadedModel;
+        cocoSsd.load().then( (loadedModel) => {
+            this.model = loadedModel;
             // Show demo section now model is ready to use.
             this.demosSection.classList.remove('invisible');
         });
@@ -109,8 +109,7 @@ class WebCam{
         // wants to activate it to call enableCam function which we will 
         // define in the next step.
         if (this.getUserMediaSupported()) {
-            this.enableWebcamButton.addEventListener('click', this.enableCam(//ここは何が入る？
-                ));
+            this.enableWebcamButton.addEventListener('click', this.enableCam);
           } else {
             console.warn('getUserMedia() is not supported by your browser');
           }
@@ -130,7 +129,7 @@ class WebCam{
         };
         
           // Activate the webcam stream.
-        navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+        navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
             this.video.srcObject = stream;
             this.video.addEventListener('loadeddata', predictWebcam);
         });
