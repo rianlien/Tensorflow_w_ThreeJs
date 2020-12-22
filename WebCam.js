@@ -28,7 +28,7 @@ class WebCam{
         // wants to activate it to call enableCam function which we will 
         // define in the next step.
         if (this.getUserMediaSupported()) {
-            this.enableWebcamButton.addEventListener('click', this.enableCam);
+            this.enableWebcamButton.addEventListener('click', this.enableCam.bind(this));
           } else {
             console.warn('getUserMedia() is not supported by your browser');
           }
@@ -54,7 +54,7 @@ class WebCam{
             console.log("this.video is "+this.video);
             console.log("this.video.srcObject is "+this.video.srcObject);
             this.video.srcObject = stream;
-            this.video.addEventListener('loadeddata', predictWebcam);
+            this.video.addEventListener('loadeddata', this.predictWebcam.bind(this));
         });
     }
     resizeCanvas(){
@@ -85,7 +85,7 @@ class WebCam{
     }
     predictWebcam(){
         this.resizeCanvas();
-        this.model.detect(video).then(function (predictions) {
+        this.model.detect(this.video).then((predictions) => {
             // Now lets loop through predictions and draw them to the live view if they have a high confidence score.
             for (let n = 0; n < predictions.length; n++) {
               // If we are over 66% sure we are sure we classified it right, draw it!
@@ -96,8 +96,8 @@ class WebCam{
             }
     
             // Call this function again to keep predicting when the browser is ready.
-            window.requestAnimationFrame(predictWebcam);
-            CALCULATOR.gameLoop();
+            window.requestAnimationFrame(this.predictWebcam.bind(this));
+            calculator.gameLoop();
         });    
     }
 }
