@@ -15,35 +15,12 @@
  * =============================================================================
  */
 
-//const STATUS = document.getElementById('status');
-const CTX = document.getElementById("canvas").getContext("2d")
-const video = document.getElementById('webcam');
-const liveView = document.getElementById('liveView');
-const demosSection = document.getElementById('demos');
-const enableWebcamButton = document.getElementById('webcamButton');
+let threeJS = new ThreeJs();
+let calculator = new FpsCalculator();
+let webcam = new WebCam();
 
-const THREEJS = new ThreeJs();
-const CALCULATOR = new FpsCalculator();
-const WEBCAM = new WebCam();
-
-
-// // Pretend model has loaded so we can try out the webcam code.
-// let model = true;
-// demosSection.classList.remove('invisible');
-// // Before we can use COCO-SSD class we must wait for it to finish
-// // loading. Machine Learning models can be large and take a moment 
-// // to get everything needed to run.
-// // Note: cocoSsd is an external object loaded from our index.html
-// // script tag import so ignore any warning in Glitch.
-// cocoSsd.load().then(function (loadedModel) {
-//   model = loadedModel;
-//   // Show demo section now model is ready to use.
-//   demosSection.classList.remove('invisible');
-// });
-
-
-THREEJS.createCube();
-THREEJS.displeyThreeJs();
-CALCULATOR.start();
-WEBCAM.startWebCam();
+threeJS.createCube();
+threeJS.displeyThreeJs();
+calculator.start();
+webcam.startWebCam();
 
