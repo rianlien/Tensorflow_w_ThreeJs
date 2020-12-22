@@ -18,6 +18,7 @@ class WebCam{
             // Show demo section now model is ready to use.
             this.demosSection.classList.remove('invisible');
         });
+        console.log("constructor this.video"+this.video);
     }
     getUserMediaSupported() {
         return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
@@ -50,6 +51,8 @@ class WebCam{
         
           // Activate the webcam stream.
         navigator.mediaDevices.getUserMedia(constraints).then((stream) =>{
+            console.log("this.video is "+this.video);
+            console.log("this.video.srcObject is "+this.video.srcObject);
             this.video.srcObject = stream;
             this.video.addEventListener('loadeddata', predictWebcam);
         });
