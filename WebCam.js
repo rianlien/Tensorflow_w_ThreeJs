@@ -3,6 +3,7 @@ class WebCam{
         this.enableWebcamButton = document.getElementById('webcamButton');
         this.video = document.getElementById('webcam');
         this.demosSection = document.getElementById('demos');
+        this.ctx = document.getElementById("canvas").getContext("2d");
         //this.liveView = document.getElementById('liveView');
         // Pretend model has loaded so we can try out the webcam code.
         this.model = true;
@@ -19,6 +20,7 @@ class WebCam{
             this.demosSection.classList.remove('invisible');
         });
         console.log("constructor this.video"+this.video);
+        this.threeJS =new ThreeJs();
     }
     getUserMediaSupported() {
         return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
@@ -28,7 +30,7 @@ class WebCam{
         // wants to activate it to call enableCam function which we will 
         // define in the next step.
         if (this.getUserMediaSupported()) {
-            this.enableWebcamButton.addEventListener('click', this.enableCam);
+            this.enableWebcamButton.addEventListener('click', this.enableCam.bind(this));
           } else {
             console.warn('getUserMedia() is not supported by your browser');
           }
@@ -54,17 +56,26 @@ class WebCam{
             console.log("this.video is "+this.video);
             console.log("this.video.srcObject is "+this.video.srcObject);
             this.video.srcObject = stream;
-            this.video.addEventListener('loadeddata', predictWebcam);
+            this.video.addEventListener('loadeddata', this.predictWebcam.bind(this));
         });
+        // let threeJS =new ThreeJs();
+        console.log("rect width is "+this.video.clientWidth+" rect height is "+this.video.clientHeight);
+        
     }
     resizeCanvas(){
         this.w = this.video.clientWidth; 
         this.h = this.video.clientHeight; 
         $('#canvas').attr('width', this.w)
         $('#canvas').attr('height', this.h)
-        //for now
-        $('#canvas_threejs').attr('width', this.w)
-        $('#canvas_threejs').attr('height', this.h)
+        // //for now
+        // $('#canvas_threejs').attr('width', this.w)
+        // $('#canvas_threejs').attr('height', this.h)
+    }
+    getRenderSizeX(){
+        return this.video.clientWidth;
+    }
+    getRenderSizeY(){
+        return this.video.clientHeight;
     }
     displayDetection(pred){
         this.ctx.beginPath();
@@ -79,25 +90,26 @@ class WebCam{
         if(pred.class == "cup"){
             this.ctx.fillStyle = "red";
         }
-
+        this.threeJS.createCube(pred.bbox[2],pred.bbox[3]);
+        this.threeJS.displeyThreeJs();
         //塗りつぶしのテキストを、座標(20, 75)の位置に最大幅200で描画する
         this.ctx.fillText(""+pred.class, pred.bbox[0],pred.bbox[1], 200);
     }
     predictWebcam(){
         this.resizeCanvas();
-        this.model.detect(video).then(function (predictions) {
+        this.model.detect(this.video).then((predictions) =>{
             // Now lets loop through predictions and draw them to the live view if they have a high confidence score.
             for (let n = 0; n < predictions.length; n++) {
               // If we are over 66% sure we are sure we classified it right, draw it!
                 this.pred = predictions[n]
                 if (this.pred.score > 0.66) {
-                    displayDetection(this.pred);
+                    this.displayDetection(this.pred);
                 }
             }
     
             // Call this function again to keep predicting when the browser is ready.
-            window.requestAnimationFrame(predictWebcam);
-            CALCULATOR.gameLoop();
+            window.requestAnimationFrame(this.predictWebcam.bind(this));
+            calculator.gameLoop();
         });    
     }
 }

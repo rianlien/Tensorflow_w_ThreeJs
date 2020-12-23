@@ -15,11 +15,12 @@
  * =============================================================================
  */
 
-let threeJS = new ThreeJs();
 let calculator = new FpsCalculator();
 let webcam = new WebCam();
 
-threeJS.createCube();
-threeJS.displeyThreeJs();
 calculator.start();
 webcam.startWebCam();
+
+// let threeJS =new ThreeJs();
+// threeJS.createCube();
+// threeJS.displeyThreeJs();
