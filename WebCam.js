@@ -90,7 +90,7 @@ class WebCam{
         if(pred.class == "cup"){
             this.ctx.fillStyle = "red";
         }
-        this.threeJS.createCube(pred.bbox[2],pred.bbox[3]);
+        this.threeJS.createCube(pred.bbox[1],pred.bbox[0],pred.bbox[2],pred.bbox[3]);
         this.threeJS.displeyThreeJs();
         //塗りつぶしのテキストを、座標(20, 75)の位置に最大幅200で描画する
         this.ctx.fillText(""+pred.class, pred.bbox[0],pred.bbox[1], 200);

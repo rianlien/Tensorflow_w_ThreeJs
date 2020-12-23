@@ -14,9 +14,13 @@ class ThreeJs {
         this.canvas.appendChild( this.renderer.domElement );
 
     }
-    createCube(w,h){
+    createCube(t,l,w,h){
         //set the size of cube to size of detection box
         this.renderer.setSize(w,h);
+        console.log("canvas top "+this.canvas.style.top);
+        console.log("canvas left "+this.canvas.style.left);
+        this.canvas.style.top=t+"px";
+        this.canvas.style.left=l+"px";
         this.depth = 1;
         this.geometry = new THREE.BoxGeometry(w,h,this.depth);
         this.material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
