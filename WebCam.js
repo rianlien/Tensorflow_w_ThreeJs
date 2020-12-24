@@ -4,16 +4,17 @@ class WebCam{
         this.video = document.getElementById('webcam');
         this.demosSection = document.getElementById('demos');
         this.ctx = document.getElementById("canvas").getContext("2d");
-        //this.liveView = document.getElementById('liveView');
+        
         // Pretend model has loaded so we can try out the webcam code.
         this.model = true;
         this.demosSection.classList.remove('invisible');
-        // Before we can use COCO-SSD class we must wait for it to finish
-        // loading. Machine Learning models can be large and take a moment 
-        // to get everything needed to run.
-        // Note: cocoSsd is an external object loaded from our index.html
-        // script tag import so ignore any warning in Glitch.
-        cocoSsd.load().then((loadedModel) => { //=>tft
+
+        /*
+        Before we can use COCO-SSD class we must wait for it to finish
+        loading. Machine Learning models can be large and take a moment 
+        to get everything needed to run.
+        */
+        cocoSsd.load().then((loadedModel) => {
             this.model = loadedModel;
             console.log(this.model);
             // Show demo section now model is ready to use.
@@ -26,9 +27,11 @@ class WebCam{
         return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
     }
     startWebCam(){
-        // If webcam supported, add event listener to button for when user
-        // wants to activate it to call enableCam function which we will 
-        // define in the next step.
+        /*
+        If webcam supported, add event listener to button for when user
+        wants to activate it to call enableCam function which we will 
+        define in the next step.
+        */
         if (this.getUserMediaSupported()) {
             this.enableWebcamButton.addEventListener('click', this.enableCam.bind(this));
           } else {
@@ -38,45 +41,42 @@ class WebCam{
     enableCam(event) {
         console.log("inside enable cam");
         // Only continue if the COCO-SSD has finished loading.
-        /*if (!this.model) {
+        if (!this.model) {
             console.log("not model")
             return;
-        }*/
+        }
           
-          // Hide the button once clicked.
+        // Hide the button once clicked.
         event.target.classList.add('removed');  
           
-          // getUsermedia parameters to force video but not audio.
+        // getUsermedia parameters to force video but not audio.
         const constraints = {
             video: true
         };
         
-          // Activate the webcam stream.
+        // Activate the webcam stream.
         navigator.mediaDevices.getUserMedia(constraints).then((stream) =>{
             console.log("this.video is "+this.video);
             console.log("this.video.srcObject is "+this.video.srcObject);
             this.video.srcObject = stream;
             this.video.addEventListener('loadeddata', this.predictWebcam.bind(this));
         });
-        // let threeJS =new ThreeJs();
+
         console.log("rect width is "+this.video.clientWidth+" rect height is "+this.video.clientHeight);
         
     }
     resizeCanvas(){
+        //updating the size of canvas ti fit the canvas of the video 
+        /*
+        Q--dose it have to happen everytime? 
+        A--yes, because it is cleaning the prebious display
+        */
         this.w = this.video.clientWidth; 
         this.h = this.video.clientHeight; 
         $('#canvas').attr('width', this.w)
-        $('#canvas').attr('height', this.h)
-        // //for now
-        // $('#canvas_threejs').attr('width', this.w)
-        // $('#canvas_threejs').attr('height', this.h)
+        $('#canvas').attr('height', this.h)    
     }
-    getRenderSizeX(){
-        return this.video.clientWidth;
-    }
-    getRenderSizeY(){
-        return this.video.clientHeight;
-    }
+    
     displayDetection(pred){
         this.ctx.beginPath();
         //detectした場所に四角形を作成する rect(x,y,w,h)
@@ -90,6 +90,7 @@ class WebCam{
         if(pred.class == "cup"){
             this.ctx.fillStyle = "red";
         }
+        //同じ位置にcubeを作成(top,left,width, height)
         this.threeJS.createCube(pred.bbox[1],pred.bbox[0],pred.bbox[2],pred.bbox[3]);
         this.threeJS.displeyThreeJs();
         //塗りつぶしのテキストを、座標(20, 75)の位置に最大幅200で描画する
@@ -99,10 +100,11 @@ class WebCam{
         this.resizeCanvas();
         this.model.detect(this.video).then((predictions) =>{
             // Now lets loop through predictions and draw them to the live view if they have a high confidence score.
+            this.predicPercent = 0.66;
             for (let n = 0; n < predictions.length; n++) {
               // If we are over 66% sure we are sure we classified it right, draw it!
                 this.pred = predictions[n]
-                if (this.pred.score > 0.66) {
+                if (this.pred.score > this.predicPercent) {
                     this.displayDetection(this.pred);
                 }
             }
