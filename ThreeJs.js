@@ -35,6 +35,16 @@ class ThreeJs {
         this.cube = new THREE.Mesh( this.geometry, this.material );
         this.scene.add( this.cube );
     }
+
+    updateCube(t,l,w,h){
+        this.renderer.setSize(w,h);
+        this.canvas.style.top=t+"px";
+        this.canvas.style.left=l+"px";
+        this.depth = 1;
+        this.geometry = new THREE.BoxGeometry(w,h,this.depth);
+        this.material = new THREE.MeshBasicMaterial( { color: 0xc0c0c0 } );
+        this.cube = new THREE.Mesh( this.geometry, this.material );
+    }
             
     displeyThreeJs(){
         this.camera.position.z = 5;

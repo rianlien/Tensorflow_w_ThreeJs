@@ -22,6 +22,7 @@ class WebCam{
         });
         console.log("constructor this.video"+this.video);
         this.threeJS =new ThreeJs();
+        this.threeJS.createCube(1,1,1,1);
     }
     getUserMediaSupported() {
         return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
@@ -62,7 +63,7 @@ class WebCam{
             this.video.addEventListener('loadeddata', this.predictWebcam.bind(this));
         });
 
-        console.log("rect width is "+this.video.clientWidth+" rect height is "+this.video.clientHeight);
+        //console.log("rect width is "+this.video.clientWidth+" rect height is "+this.video.clientHeight);
         
     }
     resizeCanvas(){
@@ -77,7 +78,7 @@ class WebCam{
         $('#canvas').attr('height', this.h)    
     }
     
-    displayDetection(pred){
+    display2dDetection(pred){
         this.ctx.beginPath();
         //detectした場所に四角形を作成する rect(x,y,w,h)
         this.ctx.rect(pred.bbox[0],pred.bbox[1],pred.bbox[2],pred.bbox[3]);
@@ -91,10 +92,17 @@ class WebCam{
             this.ctx.fillStyle = "red";
         }
         //同じ位置にcubeを作成(top,left,width, height)
-        this.threeJS.createCube(pred.bbox[1],pred.bbox[0],pred.bbox[2],pred.bbox[3]);
+        //this.threeJS.createCube(pred.bbox[1],pred.bbox[0],pred.bbox[2],pred.bbox[3]);
+        this.threeJS.updateCube(pred.bbox[1],pred.bbox[0],pred.bbox[2],pred.bbox[3]);
         this.threeJS.displeyThreeJs();
         //塗りつぶしのテキストを、座標(20, 75)の位置に最大幅200で描画する
         this.ctx.fillText(""+pred.class, pred.bbox[0],pred.bbox[1], 200);
+    }
+    display3dDetection(pred){
+        //同じ位置にcubeを作成(top,left,width, height)
+        //this.threeJS.createCube(pred.bbox[1],pred.bbox[0],pred.bbox[2],pred.bbox[3]);
+        this.threeJS.updateCube(pred.bbox[1],pred.bbox[0],pred.bbox[2],pred.bbox[3]);
+        this.threeJS.displeyThreeJs();
     }
     predictWebcam(){
         this.resizeCanvas();
@@ -105,12 +113,13 @@ class WebCam{
               // If we are over 66% sure we are sure we classified it right, draw it!
                 this.pred = predictions[n]
                 if (this.pred.score > this.predicPercent) {
-                    this.displayDetection(this.pred);
+                    this.display3dDetection(this.pred);
                 }
             }
     
             // Call this function again to keep predicting when the browser is ready.
             window.requestAnimationFrame(this.predictWebcam.bind(this));
+            //window.requestAnimationFrame(calculator.gameLoop());
             calculator.gameLoop();
         });    
     }
